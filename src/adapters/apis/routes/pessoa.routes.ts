@@ -1,6 +1,7 @@
 import pessoaController from "../controllers/pessoa.controller";
 import { CommonRoutesConfig } from "./common.routes";
 import express from "express";
+import authMiddlewares from "../middlewares/auth.middlewares";
 
 export class PessoaRoutes extends CommonRoutesConfig {
     constructor(app: express.Application) {
@@ -9,7 +10,7 @@ export class PessoaRoutes extends CommonRoutesConfig {
 
     configureRoutes(): express.Application {
         this.app.route(`/pessoas`)
-            .get(pessoaController.listPessoas)
+            .get(authMiddlewares.checkAuth, pessoaController.listPessoas)
             .post(pessoaController.createPessoa)
 
         this.app.route(`/pessoas/:idpessoa`)

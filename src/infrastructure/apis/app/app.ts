@@ -1,6 +1,8 @@
 import express from 'express';
 import * as http from 'http';
 
+
+
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
 import cors from 'cors';
@@ -16,7 +18,7 @@ import { PedidoRoutes } from '../../../adapters/apis/routes/pedido.routes';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
-const port = apiConfig.port;
+const port = process.env.PORT;
 const routes: CommonRoutesConfig[] = [];
 const debugLog: debug.IDebugger = debug('app');
 
