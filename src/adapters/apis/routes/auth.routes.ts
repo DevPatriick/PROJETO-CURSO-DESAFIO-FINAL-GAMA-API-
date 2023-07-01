@@ -10,7 +10,7 @@ export class AuthRoutes extends CommonRoutesConfig {
     }
 
     configureRoutes(): express.Application {
-        this.app.route(`/login`)
+        this.app.route('/login')
             .post(
                 authController.login
             );

@@ -5,6 +5,7 @@ import { IDatabaseModel } from "../../infrastructure/persistence/databasemodel.i
 import * as Sequelize from 'sequelize';
 import pessoasModelsMysqlDatabase from "../../infrastructure/persistence/mysql/models/pessoas.models.mysql.database";
 import bcrypt from 'bcrypt';
+import { TipoUsuario } from "../../domain/entities/pessoas/tipousuario.entity";
 
 class PessoaRepository implements IPessoaRepository {
     private _type: string = 'IPessoa';
@@ -20,14 +21,25 @@ class PessoaRepository implements IPessoaRepository {
         return pessoa;
     }
 
-    async create(resource: IPessoaEntity): Promise<IPessoaEntity> {
+    async readByUser(resource: IPessoaEntity): Promise<IPessoaEntity | undefined >{
+        const { nome, email, senha, tipoUsuario } = resource;
+
+        const user = await this._database.readByWhere(this._modelPessoas, {resource});
+
+        if(resource.tipoUsuario = TipoUsuario.Admin){
+            return user;
+        }
+    }
+
+
+    async create(resource: IPessoaEntity ): Promise<IPessoaEntity | undefined >  {
            
         const { nome, email, senha, tipoUsuario} = resource;
 
-        const userExists = await email;
+        const userExists = await this._database.readByWhere(this._modelPessoas, { email: email });
 
         if(userExists){
-            throw new Error('Email existente')
+            return ;
         }
 
         const hashSenha = await bcrypt.hash(senha, 10);
@@ -39,6 +51,8 @@ class PessoaRepository implements IPessoaRepository {
             senha: hashSenha,
             tipoUsuario
         });
+
+
         pessoa.idpessoa = pessoa.null;
         return pessoa;
     }
@@ -59,10 +73,14 @@ class PessoaRepository implements IPessoaRepository {
 
     async readByUserPass(user: string, pass: string): Promise<IPessoaEntity | undefined> {
         try{
-            const pessoa = await this._database.readByWhere(this._modelPessoas, { email: user, senha: pass });
-            console.log(pessoa);
-            console.log(pessoa);
-            return this._database.readByWhere(pessoa, this._modelPessoas);
+           
+            const pessoa = await this._database.readByWhere(this._modelPessoas, { email: user});
+           bcrypt.compareSync
+           if(bcrypt.compareSync(pass, pessoa.senha)){
+            return pessoa
+           } else{
+            return;
+           }
         } catch(err){
             throw new Error((err as Error).message);
         }
