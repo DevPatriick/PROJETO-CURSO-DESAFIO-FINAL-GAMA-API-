@@ -59,6 +59,9 @@ API desenvolvida em Node.js com TypeScript para simular as funcionalidades bási
 ├── package-lock.json
 ├── tsconfig.json
 └── README.md
+
+```
+
 🔐 Autenticação
 A autenticação é baseada em JWT. Endpoints protegidos exigem um token válido no cabeçalho da requisição:
 
